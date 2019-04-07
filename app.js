@@ -10,6 +10,11 @@ class Book {
 // UI Class: Handle UI Tasks
 class UI {
     static displayBooks() {
+
+        const books = Store.getBook();
+
+
+        /* Dummy Data
         const StoredBooks = [
             {
                 title: 'Book One',
@@ -23,6 +28,7 @@ class UI {
             }
         ];
         const books = StoredBooks;
+        */       
 
         books.forEach(book =>
             UI.addBookToList(book)
@@ -86,15 +92,15 @@ class Store {
         localStorage.setItem('books', JSON.stringify(books));
     }
 
-    static removeBook() {
+    static removeBook(isbn) {
         const books = Store.getBook();
         books.forEach((book, index) => {
-            if(book.isbn === isbm) {
-                book.splice(index, 1);
+            if(book.isbn === isbn) {
+                books.splice(index, 1);
             }
         });
 
-        localStorage.setItem('books', JOSN.stringify(books));
+        localStorage.setItem('books', JSON.stringify(books));
     }
 }
 
@@ -122,6 +128,9 @@ document.querySelector('#book-form').addEventListener('submit', (event) => {
         //Add Book to UI
         UI.addBookToList(book);
 
+        //Add book to store
+        Store.addBook(book);
+
         //Show Success Message
         UI.showAlert('Book Added', 'success');
 
@@ -135,7 +144,11 @@ document.querySelector('#book-list').addEventListener('click', (event) => {
     //Prevent Actual Submit
     event.preventDefault();
 
+    //Remove Book from UI
     UI.deleteBook(event.target);
+
+    //Remove Book from Store
+    Store.removeBook(event.target.parentElement.previousElementSibling.textContent);
 
     //Show Success Message
     UI.showAlert('Book Removed', 'success');
